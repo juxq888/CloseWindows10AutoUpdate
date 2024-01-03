@@ -20,3 +20,5 @@
 *.la
 *.a
 *.lib
+
+DisableWindowsUpdate/bin/*

@@ -10,6 +10,7 @@ namespace DisableWindowsUpdate
     {
         private static readonly int DISABLE = 0x04;
         private static readonly int AUTO = 0x02;
+
         private static readonly byte[] WIN_UPDATE_FAILURE_ACTIONS_VALUE = new byte[44]
         {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -93,9 +94,9 @@ namespace DisableWindowsUpdate
             }
             finally
             {
-                if (winAutoUpdateKey != null) winAutoUpdateKey.Close();
-                if (winUpdateKey != null) winUpdateKey.Close();
-                if (groupPolicyRegistry != null) groupPolicyRegistry.Close();
+                winAutoUpdateKey?.Close();
+                winUpdateKey?.Close();
+                groupPolicyRegistry?.Close();
             }
 
             Console.WriteLine("Success");
@@ -159,7 +160,7 @@ namespace DisableWindowsUpdate
         public void ResumeUpdate()
         {
             var winUpdateKey = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\wuauserv", true);
-            Console.WriteLine("Disable Windows Update Service...");
+            Console.WriteLine("Resume Windows Update Service...");
             winUpdateKey.SetValue("Start", AUTO, RegistryValueKind.DWord);
             if (winUpdateKey.GetValue("FailureActions") != null)
             {
@@ -204,6 +205,5 @@ namespace DisableWindowsUpdate
             currentActions[28] = 0x01;
             winUpdateKey.SetValue("FailureActions", currentActions, RegistryValueKind.Binary);
         }
-
     }
 }
